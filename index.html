@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title> A-asteriks pathfinding </title>
+        <link href="style.css" rel="stylesheet">
+    </head>
+    <body>
+        <table id="maze">
+        </table>
+        <form>
+            <div class="widget">
+                <label for="rowsCount">
+                    Rows
+                </label>
+                <input type="number" id="rowsCount">
+            </div>
+            <div class="widget">
+                <label for="colsCount">
+                    Collumns
+                </label>
+                <input type="number" id="colsCount">
+            </div>
+            <button id="createField">
+                Create field
+            </button>
+            <div class="widget">
+                <input type="radio" name="mode" checked> Start
+            </div>
+            <div class="widget">
+                <input type="radio" name="mode"> Goal
+            </div>
+            <div class="widget">
+                <input type="radio" name="mode"> Wall
+            </div>
+            <div class="widget">
+                <select id="euristic">
+                    <option value="frst" selected> First </option>
+                    <option value="scnd"> Second </option>
+                    <option value="thrd"> Third </option>
+                </select>
+            </div>
+            <button id="run">
+                Find path
+            </button>
+        </form>
+        <script src="script.js">
+        </script>
+    </body>
+</html>

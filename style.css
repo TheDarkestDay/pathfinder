@@ -1,0 +1,28 @@
+body {
+    width:65%;
+    margin:0 auto;
+    padding-top:15px;
+}
+
+table {
+    width:500px;
+    height:500px;
+    border:2px solid black;
+    display:inline-block;
+}
+
+.widget {
+    margin-top:5px;
+}
+
+form {
+    display:inline-block;
+    vertical-align:top;
+    padding:10px;
+    width:100px;
+}
+
+form select, form button {
+    width:100%;
+    margin-top:15px;
+}
