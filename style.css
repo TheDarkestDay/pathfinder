@@ -4,14 +4,21 @@ body {
     padding-top:15px;
 }
 
-table {
+.scrollable {
     width:500px;
     height:500px;
     border:2px solid black;
     display:inline-block;
+    overflow: scroll;
 }
 
 .widget {
+    margin-top:5px;
+}
+
+.inline-btn {
+    display:inline-block;
+    width:25px;
     margin-top:5px;
 }
 
@@ -25,4 +32,12 @@ form {
 form select, form button {
     width:100%;
     margin-top:15px;
+}
+
+td {
+    border:1px solid black;
+}
+
+td:hover {
+    background:yellow;
 }
