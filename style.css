@@ -39,5 +39,17 @@ td {
 }
 
 td:hover {
-    background:yellow;
+    border:1px solid blue;
+}
+
+.goal {
+    background:blue;
+}
+
+.start {
+    background:red;
+}
+
+.wall {
+    background:black;
 }
