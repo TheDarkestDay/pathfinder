@@ -4,9 +4,11 @@ window.onload = function() {
         colsCountField = document.getElementById('colsCount'),
         plusBtn = document.getElementById('enlarge'),
         minusBtn = document.getElementById('minimize'),
-        maze = document.getElementById('maze'),
+        maze = document.querySelector('.scrollable'),
         colsCount = 0,
-        rowsCount = 0;
+        rowsCount = 0,
+        mazeWidth = 500,
+        mazeHeight = 500;
     
     createFieldBtn.addEventListener('click', function(evt) {
         evt.preventDefault();
@@ -14,12 +16,14 @@ window.onload = function() {
         var currRow,
             currCell,
             cellWidth,
-            cellHeight;
+            cellHeight,
+            tbl;
         
         colsCount = parseInt(colsCountField.value);
         rowsCount = parseInt(rowsCountField.value);
-        cellWidth = 500/rowsCount;
-        cellHeight = 500/colsCount;
+        cellWidth = mazeWidth/rowsCount;
+        cellHeight = mazeHeight/colsCount;
+        tbl = document.createElement('table');
         
         maze.innerHTML = '';
         for (var i=0;i<rowsCount;i++) {
@@ -30,16 +34,30 @@ window.onload = function() {
                 currCell.style.height = cellHeight+'px';
                 currRow.appendChild(currCell);
             };
-            maze.appendChild(currRow);
+            tbl.appendChild(currRow);
         };
+        maze.appendChild(tbl);
     });
     
-    plusBtn.addEventListener('click', function() {
-        var currWidth = maze.getAttribute('width');
-        currWidth = parseInt();
+    plusBtn.addEventListener('click', function(evt) {
+        evt.preventDefault();
+        mazeWidth += 100;
+        mazeHeight += 100;
+        updateField();
     });
     
-    minusBtn.addEventListener('click', function() {
-        
+    minusBtn.addEventListener('click', function(evt) {
+        evt.preventDefault();
+        mazeWidth -= 100;
+        mazeHeight -= 100;
+        updateField();
     });
+    
+    function updateField() {
+        maze.style.width = mazeWidth+"px";
+        maze.style.height = mazeHeight+"px";
+        if (maze.innerHTML != "") {
+            createFieldBtn.click();
+        };
+    };
 };
