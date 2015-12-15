@@ -9,12 +9,80 @@ window.onload = function() {
         startModeBtn = document.getElementById('startRadio'),
         wallModeBtn = document.getElementById('wallRadio'),
         clearModeBtn = document.getElementById('clearRadio'),
+        runBtn = document.getElementById('run'),
         colsCount = 0,
         rowsCount = 0,
         mazeWidth = 500,
         mazeHeight = 500,
+        startNode,
+        goalNode,
         graph,
+        closedSet,
+        openSet,
+        currNode,
+        path,
         mode = 'start';
+    
+    function $(node) {
+        return document.querySelector(node.selector);
+    };
+    
+    function node(id) {
+        for (var i=0;i<graph.length;i++) {
+            if (graph[i].selector == id) {
+                return graph[i];
+            }
+        };
+    };
+    
+    function heuristic_cost(start,goal) {
+        var dx = Math.abs(start.x-goal.x);
+        var dy = Math.abs(start.y-goal.y);
+        return dx+dy-Math.min(dx,dy);
+    };
+    
+    function byFScore(a,b) {
+        if (a.f_score > b.f_score) {
+            return 1;
+        };
+        if (a.f_score < b.f_score) {
+            return -1;
+        };
+        return 0;
+    };
+    
+    runBtn.addEventListener('click', function() {
+        path = [];
+        closedSet = [];
+        openSet = [];
+        
+        for (var i=0;i<graph.length;i++) {
+            if ($(graph[i]).className == 'start') {
+                openSet.push(graph[i]);
+                startNode = graph[i];
+            };
+            if ($(graph[i]).className == 'goal') {
+                goalNode = graph[i];
+            };
+        };
+        
+        startNode.f_score = heuristic_cost(startNode,goalNode);
+        startNode.g_score = 0;
+        
+        while(openSet.length) {
+            currNode = openSet.sort(byFScore)[0];
+            
+            if ($(currNode).className == 'goal') {
+                drawPath();
+                break;
+            }
+            
+            
+        };
+    });
+    
+    function drawPath() {  
+    };
     
     createFieldBtn.addEventListener('click', function(evt) {
         evt.preventDefault();
@@ -30,22 +98,27 @@ window.onload = function() {
         cellWidth = mazeWidth/rowsCount;
         cellHeight = mazeHeight/colsCount;
         tbl = document.createElement('table');
-        graph = [];
         
         maze.innerHTML = '';
         for (var i=0;i<rowsCount;i++) {
             currRow = document.createElement('tr');
-            graph.push([]);
             for (var j=0;j<colsCount;j++) {
                 currCell = document.createElement('td');
+                currCell.id = i+'-'+j;
                 currCell.addEventListener('click', function(evt) {
                     evt.preventDefault();
                     evt.target.className = "";
                     switch(mode) {
                         case 'goal':
+                            if (document.querySelectorAll('.goal').length) {
+                                document.querySelector('.goal').className = "";
+                            };
                             evt.target.classList.add('goal');
                             break;
                         case 'start':
+                            if (document.querySelectorAll('.start').length) {
+                                document.querySelector('.start').className = "";
+                            };
                             evt.target.classList.add('start');
                             break;
                         case 'wall':
@@ -55,15 +128,20 @@ window.onload = function() {
                             break;
                     };
                 });
+                graph.push({
+                    x: currCell.id[0],
+                    y: currCell.id[2],
+                    g_score: 99999,
+                    f_score: 99999,
+                    selector: i+'-'+j
+                });
                 currCell.style.width = cellWidth+'px';
                 currCell.style.height = cellHeight+'px';
                 currRow.appendChild(currCell);
-                graph[i].push(0);
             };
             tbl.appendChild(currRow);
         };
         maze.appendChild(tbl);
-        console.log(graph);
     });
     
     goalModeBtn.addEventListener('click', function(evt) {
