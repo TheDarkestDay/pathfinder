@@ -24,15 +24,15 @@ window.onload = function() {
         mode = 'start';
     
     function $(node) {
-        return document.querySelector(node.selector);
+        return document.getElementById(node.selector);
     };
     
-    function node(id) {
+    function nodeObjBySelector(selector) {
         for (var i=0;i<graph.length;i++) {
-            if (graph[i].selector == id) {
+            if (graph[i].selector == selector) {
                 return graph[i];
             }
-        };
+        }
     };
     
     function heuristic_cost(start,goal) {
@@ -51,7 +51,9 @@ window.onload = function() {
         return 0;
     };
     
-    runBtn.addEventListener('click', function() {
+    runBtn.addEventListener('click', function(evt) {
+        var adjacentNodes;
+        evt.preventDefault();
         path = [];
         closedSet = [];
         openSet = [];
@@ -69,6 +71,7 @@ window.onload = function() {
         startNode.f_score = heuristic_cost(startNode,goalNode);
         startNode.g_score = 0;
         
+        
         while(openSet.length) {
             currNode = openSet.sort(byFScore)[0];
             
@@ -77,9 +80,50 @@ window.onload = function() {
                 break;
             }
             
+            adjacentNodes = getAdjacentNodesOf(currNode);
             
-        };
+            for (var i=0;i<adjacentNodes.length;i++) {
+                if (closedSet.indexOf(adjacentNodes[i]) != -1) {
+                    continue;
+                }
+                
+                
+            };
+        }; 
     });
+    
+    function getAdjacentNodesOf(node) {
+        var result = [],
+            preRes = [];
+        
+        if (node.x != 0) {
+            for (var i=node.y;i<node.y+3;i++) {
+                preRes.push(nodeObjBySelector(node.x-1+'-'+i));
+            };
+            
+            if ($(preRes[i].selector).className != 'wall') {
+                for (var i=0;i<preRes.length;i++) {
+                    
+                }
+            }
+        };
+        
+        if (node.x != rowsCount-1) {
+            for (var i=node.y;node.y+3;i++) {
+                result.push(nodeObjBySelector(node.x+1+'-'+i));
+            };
+        };
+        
+        if (node.y != 0) {
+            result.push(nodeObjBySelector(node.x+'-'+node.y-1));
+        };
+        
+        if (node.y != colsCount-1) {
+            result.push(nodeObjBySelector(node.x+'-'+node.y+1));
+        };
+                
+        return result;
+    };
     
     function drawPath() {  
     };
@@ -98,6 +142,7 @@ window.onload = function() {
         cellWidth = mazeWidth/rowsCount;
         cellHeight = mazeHeight/colsCount;
         tbl = document.createElement('table');
+        graph = [];
         
         maze.innerHTML = '';
         for (var i=0;i<rowsCount;i++) {
