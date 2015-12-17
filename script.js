@@ -22,18 +22,7 @@ window.onload = function() {
         currNode,
         path,
         mode = 'start';
-    
-    function $(node) {
-        return document.getElementById(node.selector);
-    };
-    
-    function nodeObjBySelector(selector) {
-        for (var i=0;i<graph.length;i++) {
-            if (graph[i].selector == selector) {
-                return graph[i];
-            }
-        }
-    };
+
     
     function heuristic_cost(start,goal) {
         var dx = Math.abs(start.x-goal.x);
@@ -59,23 +48,26 @@ window.onload = function() {
         openSet = [];
         
         for (var i=0;i<graph.length;i++) {
-            if ($(graph[i]).className == 'start') {
-                openSet.push(graph[i]);
-                startNode = graph[i];
-            };
-            if ($(graph[i]).className == 'goal') {
-                goalNode = graph[i];
-            };
-        };
+            for (var j=0;j<graph[i].length;j++) {
+                graph[i][j].type = document.getElementById(graph[i][j].x+'-'+graph[i][j].y).className;
+                if (graph[i][j].type == 'goal') {
+                    goalNode = graph[i][j];
+                }
+                if (graph[i][j].type == 'start') {
+                    startNode = graph[i][j];
+                }
+            }
+        }
         
+                
         startNode.f_score = heuristic_cost(startNode,goalNode);
         startNode.g_score = 0;
         
-        
-        while(openSet.length) {
+        console.log(graph);
+  /*      while(openSet.length) {
             currNode = openSet.sort(byFScore)[0];
             
-            if ($(currNode).className == 'goal') {
+            if ($(currNode.selector).className == 'goal') {
                 drawPath();
                 break;
             }
@@ -89,40 +81,72 @@ window.onload = function() {
                 
                 
             };
-        }; 
+        };  */
     });
     
     function getAdjacentNodesOf(node) {
         var result = [],
-            preRes = [];
+            nodeFormulas = [];
         
-        if (node.x != 0) {
-            for (var i=node.y;i<node.y+3;i++) {
-                preRes.push(nodeObjBySelector(node.x-1+'-'+i));
+      /*  nodeFormulas[0] = {
+            x: node.x,
+            y: node.y-1
+        };
+        
+        nodeFormulas[1] = {
+            x: node.x-1,
+            y: node.y-1
+        };
+        
+        nodeFormulas[2] = {
+            x: node.x-1,
+            y: node.y
+        };
+        
+        nodeFormulas[3] = {
+            x: node.x-1,
+            y: node.y+1
+        };
+        
+        nodeFormulas[4] = {
+            x: node.x,
+            y: node.y+1
+        };
+        
+        nodeFormulas[5] = {
+            x: node.x+1,
+            y: node.y+1
+        };
+        
+        nodeFormulas[6] = {
+            x: node.x+1,
+            y: node.y
+        };
+        
+        nodeFormulas[7] = {
+            x: node.x+1,
+            y: node.y-1
+        };
+        
+        for (var i=0;i<nodeFormulas.length;i++) {
+            if (nodeIsElligible(nodeFormulas[i])) {
+                result.push(nodeObjBySelector(nodeFormulas[i].x+'-'+nodeFormulas[i].y));
             };
-            
-            if ($(preRes[i].selector).className != 'wall') {
-                for (var i=0;i<preRes.length;i++) {
-                    
-                }
-            }
-        };
-        
-        if (node.x != rowsCount-1) {
-            for (var i=node.y;node.y+3;i++) {
-                result.push(nodeObjBySelector(node.x+1+'-'+i));
-            };
-        };
-        
-        if (node.y != 0) {
-            result.push(nodeObjBySelector(node.x+'-'+node.y-1));
-        };
-        
-        if (node.y != colsCount-1) {
-            result.push(nodeObjBySelector(node.x+'-'+node.y+1));
-        };
+        }; 
+           
+        return result; */
+    };
+    
+    function nodeIsElligible(node) {
+      /*  if (node.x >= 0 && node.x < rowsCount && node.y >= 0 && node.y < colsCount) {
+            if ($(node.x+'-'+node.y).className == 'wall') {
+                return false;
+            } else {
                 
-        return result;
+            }
+        }; */
+        
+        return false;
     };
     
     function drawPath() {  
@@ -147,6 +171,7 @@ window.onload = function() {
         maze.innerHTML = '';
         for (var i=0;i<rowsCount;i++) {
             currRow = document.createElement('tr');
+            graph.push([]);
             for (var j=0;j<colsCount;j++) {
                 currCell = document.createElement('td');
                 currCell.id = i+'-'+j;
@@ -173,12 +198,11 @@ window.onload = function() {
                             break;
                     };
                 });
-                graph.push({
+                graph[i].push({
                     x: currCell.id[0],
                     y: currCell.id[2],
                     g_score: 99999,
-                    f_score: 99999,
-                    selector: i+'-'+j
+                    f_score: 99999
                 });
                 currCell.style.width = cellWidth+'px';
                 currCell.style.height = cellHeight+'px';
