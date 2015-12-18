@@ -47,8 +47,8 @@ window.onload = function() {
         closedSet = [];
         openSet = [];
         
-        for (var i=0;i<graph.length;i++) {
-            for (var j=0;j<graph[i].length;j++) {
+        for (var i=1;i<=rowsCount;i++) {
+            for (var j=1;j<=colsCount;j++) {
                 graph[i][j].type = document.getElementById(graph[i][j].x+'-'+graph[i][j].y).className;
                 if (graph[i][j].type == 'goal') {
                     goalNode = graph[i][j];
@@ -86,55 +86,13 @@ window.onload = function() {
     
     function getAdjacentNodesOf(node) {
         var result = [],
-            nodeFormulas = [];
+            adjacentNodes = [];
         
-      /*  nodeFormulas[0] = {
-            x: node.x,
-            y: node.y-1
-        };
-        
-        nodeFormulas[1] = {
-            x: node.x-1,
-            y: node.y-1
-        };
-        
-        nodeFormulas[2] = {
-            x: node.x-1,
-            y: node.y
-        };
-        
-        nodeFormulas[3] = {
-            x: node.x-1,
-            y: node.y+1
-        };
-        
-        nodeFormulas[4] = {
-            x: node.x,
-            y: node.y+1
-        };
-        
-        nodeFormulas[5] = {
-            x: node.x+1,
-            y: node.y+1
-        };
-        
-        nodeFormulas[6] = {
-            x: node.x+1,
-            y: node.y
-        };
-        
-        nodeFormulas[7] = {
-            x: node.x+1,
-            y: node.y-1
-        };
-        
-        for (var i=0;i<nodeFormulas.length;i++) {
-            if (nodeIsElligible(nodeFormulas[i])) {
-                result.push(nodeObjBySelector(nodeFormulas[i].x+'-'+nodeFormulas[i].y));
-            };
-        }; 
+        for (var i=node.y-1;i<node.y+3;i++) {
+            
+        }
            
-        return result; */
+        return result;
     };
     
     function nodeIsElligible(node) {
@@ -167,12 +125,21 @@ window.onload = function() {
         cellHeight = mazeHeight/colsCount;
         tbl = document.createElement('table');
         graph = [];
+        graph.push([]);
+        for (var j=0;j<=colsCount+1;j++) {
+              graph[0].push({
+                 type:'wall'
+              });
+        };
         
         maze.innerHTML = '';
-        for (var i=0;i<rowsCount;i++) {
+        for (var i=1;i<rowsCount;i++) {
             currRow = document.createElement('tr');
             graph.push([]);
-            for (var j=0;j<colsCount;j++) {
+            graph[i].push({
+                type: 'wall'
+            });
+            for (var j=1;j<=colsCount;j++) {
                 currCell = document.createElement('td');
                 currCell.id = i+'-'+j;
                 currCell.addEventListener('click', function(evt) {
@@ -209,8 +176,18 @@ window.onload = function() {
                 currRow.appendChild(currCell);
             };
             tbl.appendChild(currRow);
+            graph[i].push({
+                type:'wall'
+            });
+        };
+        graph.push([]);
+        for (var j=0;j<=colsCount+1;j++) {
+                graph[graph.length-1].push({
+                    type:'wall'
+                });
         };
         maze.appendChild(tbl);
+        console.log(graph);
     });
     
     goalModeBtn.addEventListener('click', function(evt) {
