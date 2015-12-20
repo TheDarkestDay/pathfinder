@@ -53,3 +53,7 @@ td:hover {
 .wall {
     background:black;
 }
+
+.path {
+    background:green;
+}

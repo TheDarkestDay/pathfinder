@@ -40,8 +40,14 @@ window.onload = function() {
         return 0;
     };
     
+    function distance(a, b) {
+        return Math.sqrt(Math.pow(b.x-a.x,2)+Math.pow(b.y-a.y,2));
+    };
+    
     runBtn.addEventListener('click', function(evt) {
-        var adjacentNodes;
+        var adjacentNodes,
+            exp_g_score;
+        
         evt.preventDefault();
         path = [];
         closedSet = [];
@@ -63,26 +69,55 @@ window.onload = function() {
         startNode.f_score = heuristic_cost(startNode,goalNode);
         startNode.g_score = 0;
         
-        console.log(getAdjacentNodesOf(goalNode));
-   /*     while(openSet.length) {
+        openSet.push(startNode);
+        while(openSet.length) {
             currNode = openSet.sort(byFScore)[0];
+            console.log(currNode);
             
-            if ($(currNode.selector).className == 'goal') {
-                drawPath();
+            if (currNode.type == 'goal') {
+                drawPath(currNode);
                 break;
             }
             
+            openSet.splice(openSet.indexOf(currNode),1);
+            closedSet.push(currNode);
+            
             adjacentNodes = getAdjacentNodesOf(currNode);
+            console.log(adjacentNodes);
             
             for (var i=0;i<adjacentNodes.length;i++) {
                 if (closedSet.indexOf(adjacentNodes[i]) != -1) {
                     continue;
                 }
+            
+                exp_g_score = currNode.g_score + distance(currNode,adjacentNodes[i]);
+                if (openSet.indexOf(adjacentNodes[i]) == -1) {
+                    openSet.push(adjacentNodes[i]);
+                } else {
+                    if (exp_g_score > adjacentNodes[i].g_score) {
+                        continue;
+                    }
+                }
                 
-                
+                adjacentNodes[i].cameFrom = currNode.x+'-'+currNode.y;
+                adjacentNodes[i].g_score = exp_g_score;
+                adjacentNodes[i].f_score = adjacentNodes[i].g_score + heuristic_cost(adjacentNodes[i],goalNode);
             };
-        };   */
+        };   
     });
+    
+    function drawPath(node) {
+        var domNode = document.getElementById(node.cameFrom),
+            nodeX,
+            nodeY;
+        
+        if (domNode.className != 'start') {
+            domNode.className = 'path';
+            nodeX = parseInt(node.cameFrom[0]);
+            nodeY = parseInt(node.cameFrom[2]);
+            drawPath(graph[nodeX][nodeY]);
+        };
+    };
     
     function getAdjacentNodesOf(node) {
         var result = [],
@@ -151,11 +186,11 @@ window.onload = function() {
                     if (prevIncludedElemIndex != -1) {
                         result.splice(prevIncludedElemIndex,1);
                     };
-                    
-                    if (graph[node.x-1][node.y].type == 'wall') {
-                        prevIncludedElemIndex = result.indexOf(graph[node.x-1][node.y+1]);
-                        result.splice(prevIncludedElemIndex,1);
-                    };
+                };
+            
+                if (graph[node.x-1][node.y].type == 'wall') {
+                    prevIncludedElemIndex = result.indexOf(graph[node.x-1][node.y+1]);
+                    result.splice(prevIncludedElemIndex,1);
                 };
             };         
         } else {
@@ -173,9 +208,7 @@ window.onload = function() {
         return result;
     };
     
-    function drawPath() {  
-    };
-    
+
     createFieldBtn.addEventListener('click', function(evt) {
         evt.preventDefault();
         
