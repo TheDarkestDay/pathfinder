@@ -63,8 +63,8 @@ window.onload = function() {
         startNode.f_score = heuristic_cost(startNode,goalNode);
         startNode.g_score = 0;
         
-        console.log(graph);
-  /*      while(openSet.length) {
+        console.log(getAdjacentNodesOf(goalNode));
+   /*     while(openSet.length) {
             currNode = openSet.sort(byFScore)[0];
             
             if ($(currNode.selector).className == 'goal') {
@@ -81,30 +81,96 @@ window.onload = function() {
                 
                 
             };
-        };  */
+        };   */
     });
     
     function getAdjacentNodesOf(node) {
         var result = [],
-            adjacentNodes = [];
+            prevIncludedElemIndex,
+            wasWall = false;
         
-        for (var i=node.y-1;i<node.y+3;i++) {
+        if (graph[node.x-1][node.y].type != 'wall') {
+            for (var i=node.y-1;i<node.y+2;i++) {
+                if (graph[node.x-1][i].type != 'wall') {
+                    result.push(graph[node.x-1][i]);
+                };
+            };
+        } else {
+            wasWall = true;
+        };
+        
+        if (graph[node.x][node.y-1].type != 'wall') {
+            for (var i=node.x-1;i<node.x+2;i++) {
+                if (graph[i][node.y-1].type != 'wall' && result.indexOf(graph[i][node.y-1]) == -1) {
+                    result.push(graph[i][node.y-1]);
+                };
+            };
+            if (wasWall) {
+                prevIncludedElemIndex = result.indexOf(graph[node.x-1][node.y-1]);
+                if (prevIncludedElemIndex != -1) {
+                    result.splice(prevIncludedElemIndex,1);
+                };
+            };
+            wasWall = false;
+        } else {
+            prevIncludedElemIndex = result.indexOf(graph[node.x-1][node.y-1]);
+            if (prevIncludedElemIndex != -1) {
+                result.splice(prevIncludedElemIndex,1);
+            };
+            wasWall = true;
+        }
+        
+        if (graph[node.x+1][node.y].type != 'wall') {
+            for (var i=node.y-1;i<node.y+2;i++) {
+                if (graph[node.x+1][i].type != 'wall' && result.indexOf(graph[node.x+1][i]) == -1) {
+                    result.push(graph[node.x+1][i]);
+                };
+                if (wasWall) {
+                    prevIncludedElemIndex = result.indexOf(graph[node.x+1][node.y-1]);
+                    if (prevIncludedElemIndex != -1) {
+                        result.splice(prevIncludedElemIndex,1);
+                    };
+                };
+                wasWall = false;
+            };         
+        } else {
+            prevIncludedElemIndex = result.indexOf(graph[node.x+1][node.y-1]);
+            if (prevIncludedElemIndex != -1) {
+                result.splice(prevIncludedElemIndex,1);
+            };
+            wasWall = true;
+        };
+        
+        if (graph[node.x][node.y+1].type != 'wall') {
+            for (var i=node.x-1;i<node.x+2;i++) {
+                if (graph[i][node.y+1].type != 'wall' && result.indexOf(graph[i][node.y+1]) == -1) {
+                    result.push(graph[i][node.y+1]);
+                };
+                if (wasWall) {
+                    prevIncludedElemIndex = result.indexOf(graph[node.x+1][node.y+1]);
+                    if (prevIncludedElemIndex != -1) {
+                        result.splice(prevIncludedElemIndex,1);
+                    };
+                    
+                    if (graph[node.x-1][node.y].type == 'wall') {
+                        prevIncludedElemIndex = result.indexOf(graph[node.x-1][node.y+1]);
+                        result.splice(prevIncludedElemIndex,1);
+                    };
+                };
+            };         
+        } else {
+            prevIncludedElemIndex = result.indexOf(graph[node.x+1][node.y+1]);
+            if (prevIncludedElemIndex != -1) {
+                result.splice(prevIncludedElemIndex,1);
+            };
             
+            prevIncludedElemIndex = result.indexOf(graph[node.x-1][node.y+1]);
+            if (prevIncludedElemIndex != -1) {
+                result.splice(prevIncludedElemIndex,1);
+            };
         }
            
         return result;
-    };
-    
-    function nodeIsElligible(node) {
-      /*  if (node.x >= 0 && node.x < rowsCount && node.y >= 0 && node.y < colsCount) {
-            if ($(node.x+'-'+node.y).className == 'wall') {
-                return false;
-            } else {
-                
-            }
-        }; */
-        
-        return false;
     };
     
     function drawPath() {  
@@ -133,7 +199,7 @@ window.onload = function() {
         };
         
         maze.innerHTML = '';
-        for (var i=1;i<rowsCount;i++) {
+        for (var i=1;i<=rowsCount;i++) {
             currRow = document.createElement('tr');
             graph.push([]);
             graph[i].push({
@@ -166,8 +232,8 @@ window.onload = function() {
                     };
                 });
                 graph[i].push({
-                    x: currCell.id[0],
-                    y: currCell.id[2],
+                    x: parseInt(currCell.id[0]),
+                    y: parseInt(currCell.id[2]),
                     g_score: 99999,
                     f_score: 99999
                 });
