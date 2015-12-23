@@ -213,6 +213,7 @@ window.onload = function() {
         evt.preventDefault();
         
         var currRow,
+            splittedId,
             currCell,
             cellWidth,
             cellHeight,
@@ -264,9 +265,10 @@ window.onload = function() {
                             break;
                     };
                 });
+                splittedId = currCell.id.split('-');
                 graph[i].push({
-                    x: parseInt(currCell.id[0]),
-                    y: parseInt(currCell.id[2]),
+                    x: parseInt(splittedId[0]),
+                    y: parseInt(splittedId[1]),
                     g_score: 99999,
                     f_score: 99999
                 });
