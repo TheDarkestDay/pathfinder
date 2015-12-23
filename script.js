@@ -109,12 +109,13 @@ window.onload = function() {
     function drawPath(node) {
         var domNode = document.getElementById(node.cameFrom),
             nodeX,
-            nodeY;
+            nodeY,
+            cameFrom = node.cameFrom.split('-');
         
         if (domNode.className != 'start') {
             domNode.className = 'path';
-            nodeX = parseInt(node.cameFrom[0]);
-            nodeY = parseInt(node.cameFrom[2]);
+            nodeX = parseInt(cameFrom[0]);
+            nodeY = parseInt(cameFrom[1]);
             drawPath(graph[nodeX][nodeY]);
         };
     };
@@ -143,11 +144,19 @@ window.onload = function() {
             result.push(graph[node.x+1][node.y-1]);
         };
         
+        for (var i=0;i<result.length;i++) {
+            if (result[i].type == 'wall') {
+                result.splice(i,1);
+            };
+        };
+        
         for (var i=0;i<directNodes.length;i++) {
             if (directNodes[i].type != 'wall') {
                 result.push(directNodes[i]);
             };
         };
+        
+        
            
         return result;
     };
