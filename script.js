@@ -121,89 +121,33 @@ window.onload = function() {
     
     function getAdjacentNodesOf(node) {
         var result = [],
-            prevIncludedElemIndex,
-            wasWall = false;
+            top = graph[node.x-1][node.y],
+            right = graph[node.x][node.y+1],
+            bot = graph[node.x+1][node.y],
+            left = graph[node.x][node.y-1],
+            directNodes = [top,right,bot,left];
         
-        if (graph[node.x-1][node.y].type != 'wall') {
-            for (var i=node.y-1;i<node.y+2;i++) {
-                if (graph[node.x-1][i].type != 'wall') {
-                    result.push(graph[node.x-1][i]);
-                };
-            };
-        } else {
-            wasWall = true;
+        if (top.type != 'wall' && left.type != 'wall') {
+            result.push(graph[node.x-1][node.y-1]);
         };
         
-        if (graph[node.x][node.y-1].type != 'wall') {
-            for (var i=node.x-1;i<node.x+2;i++) {
-                if (graph[i][node.y-1].type != 'wall' && result.indexOf(graph[i][node.y-1]) == -1) {
-                    result.push(graph[i][node.y-1]);
-                };
-            };
-            if (wasWall) {
-                prevIncludedElemIndex = result.indexOf(graph[node.x-1][node.y-1]);
-                if (prevIncludedElemIndex != -1) {
-                    result.splice(prevIncludedElemIndex,1);
-                };
-            };
-            wasWall = false;
-        } else {
-            prevIncludedElemIndex = result.indexOf(graph[node.x-1][node.y-1]);
-            if (prevIncludedElemIndex != -1) {
-                result.splice(prevIncludedElemIndex,1);
-            };
-            wasWall = true;
-        }
-        
-        if (graph[node.x+1][node.y].type != 'wall') {
-            for (var i=node.y-1;i<node.y+2;i++) {
-                if (graph[node.x+1][i].type != 'wall' && result.indexOf(graph[node.x+1][i]) == -1) {
-                    result.push(graph[node.x+1][i]);
-                };
-                if (wasWall) {
-                    prevIncludedElemIndex = result.indexOf(graph[node.x+1][node.y-1]);
-                    if (prevIncludedElemIndex != -1) {
-                        result.splice(prevIncludedElemIndex,1);
-                    };
-                };
-                wasWall = false;
-            };         
-        } else {
-            prevIncludedElemIndex = result.indexOf(graph[node.x+1][node.y-1]);
-            if (prevIncludedElemIndex != -1) {
-                result.splice(prevIncludedElemIndex,1);
-            };
-            wasWall = true;
+        if (top.type != 'wall' && right.type != 'wall') {
+            result.push(graph[node.x-1][node.y+1]);
         };
         
-        if (graph[node.x][node.y+1].type != 'wall') {
-            for (var i=node.x-1;i<node.x+2;i++) {
-                if (graph[i][node.y+1].type != 'wall' && result.indexOf(graph[i][node.y+1]) == -1) {
-                    result.push(graph[i][node.y+1]);
-                };
-                if (wasWall) {
-                    prevIncludedElemIndex = result.indexOf(graph[node.x+1][node.y+1]);
-                    if (prevIncludedElemIndex != -1) {
-                        result.splice(prevIncludedElemIndex,1);
-                    };
-                };
-            
-                if (graph[node.x-1][node.y].type == 'wall') {
-                    prevIncludedElemIndex = result.indexOf(graph[node.x-1][node.y+1]);
-                    result.splice(prevIncludedElemIndex,1);
-                };
-            };         
-        } else {
-            prevIncludedElemIndex = result.indexOf(graph[node.x+1][node.y+1]);
-            if (prevIncludedElemIndex != -1) {
-                result.splice(prevIncludedElemIndex,1);
+        if (right.type != 'wall' && bot.type != 'wall') {
+            result.push(graph[node.x+1][node.y+1]);
+        };
+        
+        if (bot.type != 'wall' && left.type != 'wall') {
+            result.push(graph[node.x+1][node.y-1]);
+        };
+        
+        for (var i=0;i<directNodes.length;i++) {
+            if (directNodes[i].type != 'wall') {
+                result.push(directNodes[i]);
             };
-            
-            prevIncludedElemIndex = result.indexOf(graph[node.x-1][node.y+1]);
-            if (prevIncludedElemIndex != -1) {
-                result.splice(prevIncludedElemIndex,1);
-            };
-        }
+        };
            
         return result;
     };
