@@ -282,8 +282,9 @@ window.onload = function() {
         };
     };
     
+    /********************************************************
     // Tests
-    
+    \*********************************************************/
     
     describe('FScore comparator', function() {
     
@@ -415,6 +416,85 @@ window.onload = function() {
             minusBtn.click();
             expect(mazeWidth).toEqual(500);
             expect(mazeHeight).toEqual(500);
+        });
+    });
+    
+    describe('field controller', function() {
+        
+        it('should create 5x5 row', function() {
+            rowsCountField.value = 5;
+            colsCountField.value = 5;
+            createFieldBtn.click();
+            
+            expect(document.querySelectorAll('td').length).toEqual(25);
+            expect(graph.length).toEqual(7);
+        });
+        
+        it('should create 7x8 row', function() {
+            rowsCountField.value = 7;
+            colsCountField.value = 8;
+            createFieldBtn.click();
+            
+            expect(document.querySelectorAll('td').length).toEqual(56);
+            expect(graph.length).toEqual(9);
+        });
+        
+        it('should create 10x10 row', function() {
+            rowsCountField.value = 10;
+            colsCountField.value = 10;
+            createFieldBtn.click();
+            
+            expect(document.querySelectorAll('td').length).toEqual(100);
+            expect(graph.length).toEqual(12);
+        });
+    });
+    
+    describe('mouse mode controller', function() {
+              
+        it('should mark goal node as blue', function() {
+            goalModeBtn.click();
+            document.getElementById('1-3').click();
+            expect(document.getElementById('1-3').className).toEqual('goal');
+        });
+        
+        it('should mark start node as red', function() {
+            startModeBtn.click();
+            document.getElementById('4-5').click();
+            expect(document.getElementById('4-5').className).toEqual('start');
+        });
+        
+        it('should mark wall node as black', function() {
+            wallModeBtn.click();
+            document.getElementById('3-3').click();
+            document.getElementById('2-4').click();
+            expect(document.getElementById('3-3').className).toEqual('wall');
+            expect(document.getElementById('2-4').className).toEqual('wall');
+        });
+    });
+    
+    describe('path finder', function() {
+        
+        it('should mark 4 cells green as a optimal path', function() {
+            runBtn.click();
+            expect(document.querySelectorAll('.path').length).toEqual(4);
+        });
+        
+        
+        it('should clear everything', function() {
+            clearModeBtn.click();
+            document.getElementById('3-3').click();
+            document.getElementById('2-4').click();
+            document.getElementById('1-3').click();
+            document.getElementById('4-5').click();
+            document.getElementById('3-5').click();
+            document.getElementById('2-5').click();
+            document.getElementById('1-5').click();
+            document.getElementById('1-4').click();
+            
+            expect(document.querySelectorAll('.path').length).toEqual(0);
+            expect(document.querySelectorAll('.goal').length).toEqual(0);
+            expect(document.querySelectorAll('.start').length).toEqual(0);
+            expect(document.querySelectorAll('.wall').length).toEqual(0);
         });
     });
 };
