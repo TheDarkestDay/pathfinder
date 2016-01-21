@@ -281,4 +281,140 @@ window.onload = function() {
             createFieldBtn.click();
         };
     };
+    
+    // Tests
+    
+    
+    describe('FScore comparator', function() {
+    
+    it('should return 1 if first argument scrore is greater', function() {
+            var a = {
+                f_score: 10
+            };
+            var b = {
+                f_score: 9
+            };
+        
+            expect(byFScore(a,b)).toEqual(1);
+        });
+    
+    it('should return 0 if both arguments are equal', function() {
+            var a = {
+                f_score: 10
+            };
+            var b = {
+                f_score: 10
+            };
+        
+            expect(byFScore(a,b)).toEqual(0);
+        });
+
+    it('should return -1 if first argument scrore is lesser', function() {
+            var a = {
+                f_score: 8
+            };
+            var b = {
+                f_score: 9
+            };
+        
+            expect(byFScore(a,b)).toEqual(-1);
+        });
+    });
+    
+    describe('diagonal heuristic cost', function() {
+        
+        it('(3,5) -> (7,8) = 4', function() {
+            var pointA = {
+                x: 3,
+                y: 5
+            };
+            var pointB = {
+                x: 7,
+                y: 8
+            };
+            expect(heuristic_cost(pointA,pointB)).toEqual(4);
+        });
+        
+        it('(12,2) -> (9,1) = 3', function() {
+            var pointA = {
+                x: 12,
+                y: 2
+            };
+            var pointB = {
+                x: 9,
+                y: 1
+            };
+            expect(heuristic_cost(pointA,pointB)).toEqual(3);
+        });
+        
+        it('(17,11) -> (9,9) = 8', function() {
+            var pointA = {
+                x: 17,
+                y: 11
+            };
+            var pointB = {
+                x: 9,
+                y: 9
+            };
+            expect(heuristic_cost(pointA,pointB)).toEqual(8);
+        });
+        
+    });
+    
+    describe('distance calc function', function() {
+        
+        it('(3,4) -> (8,10) = ', function() {
+            var pointA = {
+                x: 3,
+                y: 4
+            };
+            var pointB = {
+                x:8,
+                y:10
+            };
+            
+            expect(distance(pointA,pointB)).toEqual(7.810249675906654);
+        });
+        
+        it('(13,24) -> (7,17) = ', function() {
+            var pointA = {
+                x: 13,
+                y: 24
+            };
+            var pointB = {
+                x:7,
+                y:17
+            };
+            
+            expect(distance(pointA,pointB)).toEqual(9.219544457292887);
+        });
+        
+        it('(0,0) -> (8,26) = ', function() {
+            var pointA = {
+                x: 0,
+                y: 0
+            };
+            var pointB = {
+                x:8,
+                y:26
+            };
+            
+            expect(distance(pointA,pointB)).toEqual(27.202941017470888);
+        });
+    });
+    
+    describe('maze width and height', function() {
+        
+        it('should be 600 after clicking plus', function() {
+            plusBtn.click();
+            expect(mazeWidth).toEqual(600);
+            expect(mazeHeight).toEqual(600);
+        });
+        
+        it('should be 500 after clicking minus', function() {
+            minusBtn.click();
+            expect(mazeWidth).toEqual(500);
+            expect(mazeHeight).toEqual(500);
+        });
+    });
 };
