@@ -57,3 +57,7 @@ td:hover {
 .path {
     background:green;
 }
+
+.open-set {
+    background: yellow;
+}

@@ -10,6 +10,7 @@ window.onload = function() {
         wallModeBtn = document.getElementById('wallRadio'),
         clearModeBtn = document.getElementById('clearRadio'),
         runBtn = document.getElementById('run'),
+        heurisitcSel = document.getElementById('euristic'),
         colsCount = 0,
         rowsCount = 0,
         mazeWidth = 500,
@@ -25,9 +26,20 @@ window.onload = function() {
 
     
     function heuristic_cost(start,goal) {
-        var dx = Math.abs(start.x-goal.x);
-        var dy = Math.abs(start.y-goal.y);
-        return dx+dy-Math.min(dx,dy);
+        switch(heurisitcSel.value) {
+            case 'frst':
+                var dx = Math.abs(start.x-goal.x);
+                var dy = Math.abs(start.y-goal.y);
+                return dx+dy-Math.min(dx,dy);
+                break;
+            case 'scnd':
+                var dx = Math.abs(start.x-goal.x);
+                var dy = Math.abs(start.y-goal.y);
+                return 2*(dx+dy);
+                break;
+            default:
+                break;
+        };
     };
     
     function byFScore(a,b) {
@@ -103,8 +115,19 @@ window.onload = function() {
                 adjacentNodes[i].g_score = exp_g_score;
                 adjacentNodes[i].f_score = adjacentNodes[i].g_score + heuristic_cost(adjacentNodes[i],goalNode);
             };
-        };   
+            drawOpenSet(openSet);
+        };
     });
+    
+    function drawOpenSet(set) {
+        var selector;
+        for (var i=0;i<set.length;i++) {
+            selector = set[i].x+'-'+set[i].y;
+            if (document.getElementById(selector).className != 'start' && document.getElementById(selector).className != 'goal') {
+                document.getElementById(selector).className = 'open-set';
+            };
+        };
+    };
     
     function drawPath(node) {
         var domNode = document.getElementById(node.cameFrom),
@@ -364,7 +387,7 @@ window.onload = function() {
     
     describe('distance calc function', function() {
         
-        it('(3,4) -> (8,10) = ', function() {
+        it('(3,4) -> (8,10) = 7.81', function() {
             var pointA = {
                 x: 3,
                 y: 4
@@ -377,7 +400,7 @@ window.onload = function() {
             expect(distance(pointA,pointB)).toEqual(7.810249675906654);
         });
         
-        it('(13,24) -> (7,17) = ', function() {
+        it('(13,24) -> (7,17) = 9.21', function() {
             var pointA = {
                 x: 13,
                 y: 24
@@ -390,7 +413,7 @@ window.onload = function() {
             expect(distance(pointA,pointB)).toEqual(9.219544457292887);
         });
         
-        it('(0,0) -> (8,26) = ', function() {
+        it('(0,0) -> (8,26) = 27.2', function() {
             var pointA = {
                 x: 0,
                 y: 0
@@ -472,29 +495,25 @@ window.onload = function() {
         });
     });
     
-    describe('path finder', function() {
+   describe('path finder', function() {
         
         it('should mark 4 cells green as a optimal path', function() {
             runBtn.click();
             expect(document.querySelectorAll('.path').length).toEqual(4);
         });
+       
+       it('should find optimal path', function() {
+           expect(document.getElementById('1-4').className).toEqual('path');
+           expect(document.getElementById('1-5').className).toEqual('path');
+           expect(document.getElementById('2-5').className).toEqual('path');
+           expect(document.getElementById('3-5').className).toEqual('path');
+           
+           for (var i=1;i<rowsCount;i++) {
+               for (var j=1;j<colsCount;j++) {
+                   document.getElementById(i+'-'+j).className = '';
+               }
+           }
+       });
         
-        
-        it('should clear everything', function() {
-            clearModeBtn.click();
-            document.getElementById('3-3').click();
-            document.getElementById('2-4').click();
-            document.getElementById('1-3').click();
-            document.getElementById('4-5').click();
-            document.getElementById('3-5').click();
-            document.getElementById('2-5').click();
-            document.getElementById('1-5').click();
-            document.getElementById('1-4').click();
-            
-            expect(document.querySelectorAll('.path').length).toEqual(0);
-            expect(document.querySelectorAll('.goal').length).toEqual(0);
-            expect(document.querySelectorAll('.start').length).toEqual(0);
-            expect(document.querySelectorAll('.wall').length).toEqual(0);
-        });
-    });
+    });  
 };
